@@ -11,10 +11,16 @@ const Home: React.FC = () => {
   };
 
   return (
-    <div>
-      <h1>Reactive Audio Waveform Generator</h1>
+    <div className="bg-white p-8 rounded shadow-lg">
+      <h1 className="text-2xl font-bold text-center mb-4">
+        Reactive Audio Waveform Generator
+      </h1>
       <FileUpload onFileChange={handleFileChange} />
-      {audioFile && <ReactiveSoundWave audioFile={audioFile} />}
+      {audioFile && (
+        <>
+          <ReactiveSoundWave audioFile={audioFile} />
+        </>
+      )}
     </div>
   );
 };
