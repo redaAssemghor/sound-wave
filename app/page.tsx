@@ -11,7 +11,7 @@ const Home: React.FC = () => {
   };
 
   return (
-    <div className="">
+    <div className="h-screen w-screen">
       <h1 className="text-2xl font-bold text-center mb-4">
         Reactive Audio Waveform Generator
       </h1>

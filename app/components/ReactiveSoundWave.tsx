@@ -1,71 +1,66 @@
 import React, { useRef, useEffect, useState } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
-import * as THREE from "three";
+import { Canvas } from "@react-three/fiber";
+import SoundWaveMesh from "./SoundWaveMesh";
+import { OrbitControls } from "@react-three/drei";
 
 interface ReactiveSoundWaveProps {
   audioFile: File;
 }
 
-const SoundWaveMesh: React.FC<{ analyser: AnalyserNode | null }> = ({
-  analyser,
-}) => {
-  const meshRef = useRef<THREE.Mesh>(null);
-
-  useFrame(() => {
-    if (analyser && meshRef.current) {
-      const dataArray = new Uint8Array(analyser.frequencyBinCount);
-      analyser.getByteFrequencyData(dataArray);
-
-      const scale = 1 + dataArray[0] / 128;
-      meshRef.current.scale.set(scale, scale, scale);
-    }
-  });
-
-  return (
-    <mesh ref={meshRef}>
-      <boxGeometry args={[1, 1, 1]} />
-      <meshStandardMaterial color={"orange"} />
-    </mesh>
-  );
-};
-
 const ReactiveSoundWave: React.FC<ReactiveSoundWaveProps> = ({ audioFile }) => {
   const [analyser, setAnalyser] = useState<AnalyserNode | null>(null);
+  const [audioUrl, setAudioUrl] = useState<string | null>(null);
+  const audioRef = useRef<HTMLAudioElement>(null);
 
   useEffect(() => {
     if (audioFile) {
-      const audioContext = new (window.AudioContext ||
-        window.webkitAudioContext)();
+      const AudioContext =
+        window.AudioContext || (window as any).webkitAudioContext;
+      const audioContext = new AudioContext();
       const analyserNode = audioContext.createAnalyser();
       analyserNode.fftSize = 256;
 
       const fileReader = new FileReader();
       fileReader.onload = (event) => {
         if (event.target?.result) {
-          audioContext.decodeAudioData(
-            event.target.result as ArrayBuffer,
-            (buffer) => {
-              const source = audioContext.createBufferSource();
-              source.buffer = buffer;
-              source.connect(analyserNode);
-              analyserNode.connect(audioContext.destination);
-              source.start(0);
+          const audioBuffer = event.target.result as ArrayBuffer;
+          audioContext.decodeAudioData(audioBuffer, (buffer) => {
+            const source = audioContext.createBufferSource();
+            source.buffer = buffer;
+            source.connect(analyserNode);
+            analyserNode.connect(audioContext.destination);
+            source.start(0);
+
+            if (audioRef.current) {
+              const audioElement = audioRef.current;
+              audioElement.src = URL.createObjectURL(audioFile);
+              audioElement.onplay = () => {
+                const track =
+                  audioContext.createMediaElementSource(audioElement);
+                track.connect(analyserNode);
+                analyserNode.connect(audioContext.destination);
+              };
             }
-          );
+          });
         }
       };
       fileReader.readAsArrayBuffer(audioFile);
 
       setAnalyser(analyserNode);
+      setAudioUrl(URL.createObjectURL(audioFile));
     }
   }, [audioFile]);
 
   return (
-    <Canvas>
-      <ambientLight />
-      <pointLight position={[10, 10, 10]} />
-      <SoundWaveMesh analyser={analyser} />
-    </Canvas>
+    <div className="h-full w-full">
+      {audioUrl && <audio controls src={audioUrl} ref={audioRef} />}
+      <Canvas>
+        <ambientLight />
+        <pointLight position={[10, 10, 10]} />
+        <SoundWaveMesh analyser={analyser} />
+        <OrbitControls />
+      </Canvas>
+    </div>
   );
 };
 
