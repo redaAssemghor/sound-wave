@@ -9,11 +9,14 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@ffmpeg/ffmpeg": "^0.12.10",
+    "@react-three/fiber": "^8.16.8",
+    "@types/three": "^0.166.0",
+    "dat.gui": "^0.7.9",
     "file-saver": "^2.0.5",
     "next": "14.2.5",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "three": "^0.166.1"
   },
   "devDependencies": {
     "@types/node": "^20",

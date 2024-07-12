@@ -1,79 +1,71 @@
-import { useEffect, useRef } from "react";
+import React, { useRef, useEffect, useState } from "react";
+import { Canvas, useFrame } from "@react-three/fiber";
+import * as THREE from "three";
 
 interface ReactiveSoundWaveProps {
   audioFile: File;
 }
 
+const SoundWaveMesh: React.FC<{ analyser: AnalyserNode | null }> = ({
+  analyser,
+}) => {
+  const meshRef = useRef<THREE.Mesh>(null);
+
+  useFrame(() => {
+    if (analyser && meshRef.current) {
+      const dataArray = new Uint8Array(analyser.frequencyBinCount);
+      analyser.getByteFrequencyData(dataArray);
+
+      const scale = 1 + dataArray[0] / 128;
+      meshRef.current.scale.set(scale, scale, scale);
+    }
+  });
+
+  return (
+    <mesh ref={meshRef}>
+      <boxGeometry args={[1, 1, 1]} />
+      <meshStandardMaterial color={"orange"} />
+    </mesh>
+  );
+};
+
 const ReactiveSoundWave: React.FC<ReactiveSoundWaveProps> = ({ audioFile }) => {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [analyser, setAnalyser] = useState<AnalyserNode | null>(null);
 
   useEffect(() => {
-    const audioCtx = new AudioContext();
-    const canvas = canvasRef.current;
-    const canvasCtx = canvas?.getContext("2d");
+    if (audioFile) {
+      const audioContext = new (window.AudioContext ||
+        window.webkitAudioContext)();
+      const analyserNode = audioContext.createAnalyser();
+      analyserNode.fftSize = 256;
 
-    const fileReader = new FileReader();
-    fileReader.readAsArrayBuffer(audioFile);
-    fileReader.onloadend = () => {
-      audioCtx.decodeAudioData(fileReader.result as ArrayBuffer, (buffer) => {
-        const source = audioCtx.createBufferSource();
-        source.buffer = buffer;
-
-        const analyser = audioCtx.createAnalyser();
-        source.connect(analyser);
-        analyser.connect(audioCtx.destination);
-
-        analyser.fftSize = 2048;
-        const bufferLength = analyser.frequencyBinCount;
-        const dataArray = new Uint8Array(bufferLength);
-
-        source.start();
-
-        const draw = () => {
-          if (!canvas || !canvasCtx) return;
-          requestAnimationFrame(draw);
-
-          analyser.getByteTimeDomainData(dataArray);
-
-          canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
-
-          canvasCtx.beginPath();
-          const sliceWidth = (canvas.width * 1.0) / bufferLength;
-          let x = 0;
-
-          for (let i = 0; i < bufferLength; i++) {
-            const v = dataArray[i] / 128.0;
-            const y = (v * canvas.height) / 2;
-
-            if (i === 0) {
-              canvasCtx.moveTo(x, y);
-            } else {
-              canvasCtx.lineTo(x, y);
+      const fileReader = new FileReader();
+      fileReader.onload = (event) => {
+        if (event.target?.result) {
+          audioContext.decodeAudioData(
+            event.target.result as ArrayBuffer,
+            (buffer) => {
+              const source = audioContext.createBufferSource();
+              source.buffer = buffer;
+              source.connect(analyserNode);
+              analyserNode.connect(audioContext.destination);
+              source.start(0);
             }
+          );
+        }
+      };
+      fileReader.readAsArrayBuffer(audioFile);
 
-            x += sliceWidth;
-          }
-
-          canvasCtx.lineTo(canvas.width, canvas.height / 2);
-          canvasCtx.stroke();
-        };
-
-        draw();
-      });
-    };
-
-    return () => {
-      audioCtx.close();
-    };
+      setAnalyser(analyserNode);
+    }
   }, [audioFile]);
 
   return (
-    <canvas
-      ref={canvasRef}
-      width="600"
-      height="200"
-      className="border border-gray-300"
-    ></canvas>
+    <Canvas>
+      <ambientLight />
+      <pointLight position={[10, 10, 10]} />
+      <SoundWaveMesh analyser={analyser} />
+    </Canvas>
   );
 };
 
