@@ -56,7 +56,6 @@ const ReactiveSoundWave: React.FC<ReactiveSoundWaveProps> = ({ audioFile }) => {
       {audioUrl && <audio controls src={audioUrl} ref={audioRef} />}
       <Canvas>
         <ambientLight />
-        <pointLight position={[10, 10, 10]} />
         <SoundWaveMesh analyser={analyser} />
         <OrbitControls />
       </Canvas>
