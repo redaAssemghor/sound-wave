@@ -1,32 +1,30 @@
-import React, { useRef, useEffect } from "react";
-import { useFrame, extend } from "@react-three/fiber";
-import { shaderMaterial } from "@react-three/drei";
+import React, { useRef } from "react";
 import * as THREE from "three";
-import vertexShader from "./vertexShader.glsl";
-import fragmentShader from "./fragmentShader.glsl";
+import { extend, useFrame } from "@react-three/fiber";
+import { shaderMaterial } from "@react-three/drei";
+import vertexShader from "./shaders/vertexShader.glsl";
+import fragmentShader from "./shaders/fragmentShader.glsl";
 
-// Create the custom shader material
-const DistortMaterial = shaderMaterial(
+// Create the shader material
+const WaveShaderMaterial = shaderMaterial(
   {
-    u_time: 0,
-    u_frequency: 0,
+    uTime: 0,
+    uFrequency: 0,
+    uColor: new THREE.Color(0.0, 0.0, 0.0),
   },
   vertexShader,
   fragmentShader
 );
 
-extend({ DistortMaterial });
-
 declare global {
   namespace JSX {
     interface IntrinsicElements {
-      distortMaterial: React.DetailedHTMLProps<
-        React.HTMLAttributes<HTMLElement>,
-        HTMLElement
-      > & { attach?: string; uniforms?: any };
+      waveShaderMaterial: any;
     }
   }
 }
+
+extend({ WaveShaderMaterial });
 
 const SoundWaveMesh: React.FC<{ analyser: AnalyserNode | null }> = ({
   analyser,
@@ -37,16 +35,18 @@ const SoundWaveMesh: React.FC<{ analyser: AnalyserNode | null }> = ({
     if (analyser && meshRef.current) {
       const dataArray = new Uint8Array(analyser.frequencyBinCount);
       analyser.getByteFrequencyData(dataArray);
-      const avgFrequency = dataArray.reduce((a, b) => a + b) / dataArray.length;
 
-      // Update time and frequency uniforms
+      const avgFrequency =
+        dataArray.reduce((sum, value) => sum + value, 0) / dataArray.length;
+
+      // Cast the material to the correct type
       const material = meshRef.current.material as any;
       if (material.uniforms) {
-        material.uniforms.u_time.value = clock.getElapsedTime();
-        material.uniforms.u_frequency.value = avgFrequency / 256;
+        material.uniforms.uTime.value = clock.getElapsedTime();
+        material.uniforms.uFrequency.value = avgFrequency / 64;
       }
 
-      // Rotate the sphere slowly
+      // Rotate the sphere more slowly
       meshRef.current.rotation.x += 0.001;
       meshRef.current.rotation.y += 0.001;
     }
@@ -55,7 +55,7 @@ const SoundWaveMesh: React.FC<{ analyser: AnalyserNode | null }> = ({
   return (
     <mesh ref={meshRef}>
       <icosahedronGeometry args={[4, 30]} />
-      <distortMaterial attach="material" />
+      <waveShaderMaterial uColor={new THREE.Color("hotpink")} />
     </mesh>
   );
 };

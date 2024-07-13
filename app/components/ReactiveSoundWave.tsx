@@ -1,7 +1,8 @@
 import React, { useRef, useEffect, useState } from "react";
 import { Canvas } from "@react-three/fiber";
-import SoundWaveMesh from "./SoundWaveMesh";
 import { OrbitControls } from "@react-three/drei";
+import SoundWaveMesh from "./SoundWaveMesh";
+import WaveMesh from "./Shader";
 
 interface ReactiveSoundWaveProps {
   audioFile: File;
@@ -56,6 +57,7 @@ const ReactiveSoundWave: React.FC<ReactiveSoundWaveProps> = ({ audioFile }) => {
       {audioUrl && <audio controls src={audioUrl} ref={audioRef} />}
       <Canvas>
         <ambientLight />
+        <pointLight position={[10, 10, 10]} />
         <SoundWaveMesh analyser={analyser} />
         <OrbitControls />
       </Canvas>
