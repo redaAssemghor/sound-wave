@@ -1,3 +1,19 @@
+export const fragmentShader = `
+uniform float u_red;
+uniform float u_green;
+uniform float u_blue;
+
+varying vec2 vUv;
+varying float vWave;
+
+void main() {
+  // Set the color based on the wave value
+  vec3 color = vec3(u_red, u_green, u_blue) * (0.5 + 0.5 * vWave);
+  gl_FragColor = vec4(color, 1.0);
+}
+`;
+
+export const vertexShader = `
 uniform float u_time;
 uniform float u_frequency;
 
@@ -101,11 +117,12 @@ float pnoise(vec3 P, vec3 rep)
 void main() {
   vUv = uv;
 
-  // Calculate Perlin noise displacement
-  float noise = 3.0 * pnoise(position + u_time, vec3(10.0));
+  // Calculate Perlin noise displacement for initial bumpiness
+  float noise = 3.0 * pnoise(position, vec3(10.0));
   float displacement = (u_frequency / 30.0) * (noise / 10.0);
   vec3 newPosition = position + normal * displacement;
   vWave = displacement;
 
   gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition, 1.0);
 }
+`;

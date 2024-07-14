@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
-import SoundWaveMesh from "./SoundWaveMesh";
+import SoundWaveBall from "./SoundWaveBall";
 
 interface ReactiveSoundWaveProps {
   audioFile: File;
@@ -52,12 +52,12 @@ const ReactiveSoundWave: React.FC<ReactiveSoundWaveProps> = ({ audioFile }) => {
   }, [audioFile]);
 
   return (
-    <div className="h-full w-full">
+    <div className="h-full">
       {audioUrl && <audio controls src={audioUrl} ref={audioRef} />}
-      <Canvas>
+      <Canvas camera={{ position: [0, 0, 10], fov: 45 }}>
         <ambientLight />
         <pointLight position={[10, 10, 10]} />
-        <SoundWaveMesh analyser={analyser} />
+        <SoundWaveBall analyser={analyser} />
         <OrbitControls />
       </Canvas>
     </div>

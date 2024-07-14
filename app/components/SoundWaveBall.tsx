@@ -2,17 +2,16 @@ import React, { useRef } from "react";
 import * as THREE from "three";
 import { extend, useFrame } from "@react-three/fiber";
 import { shaderMaterial } from "@react-three/drei";
-import vertexShader from "./shaders/vertexShader.glsl";
-import fragmentShader from "./shaders/fragmentShader.glsl";
+import { fragmentShader, vertexShader } from "./shader";
 
 // Create the shader material
 const WaveShaderMaterial = shaderMaterial(
   {
     u_time: 0,
     u_frequency: 0,
-    u_red: 1.0,
-    u_green: 1.0,
-    u_blue: 1.0,
+    u_red: 238 / 255, // Initial red value for rgb(238,130,238)
+    u_green: 130 / 255, // Initial green value for rgb(238,130,238)
+    u_blue: 238 / 255, // Initial blue value for rgb(238,130,238)
   },
   vertexShader,
   fragmentShader
@@ -28,7 +27,7 @@ declare global {
 
 extend({ WaveShaderMaterial });
 
-const SoundWaveMesh: React.FC<{ analyser: AnalyserNode | null }> = ({
+const SoundWaveBall: React.FC<{ analyser: AnalyserNode | null }> = ({
   analyser,
 }) => {
   const meshRef = useRef<THREE.Mesh>(null);
@@ -46,11 +45,21 @@ const SoundWaveMesh: React.FC<{ analyser: AnalyserNode | null }> = ({
       if (material.uniforms) {
         material.uniforms.u_time.value = clock.getElapsedTime();
         material.uniforms.u_frequency.value = avgFrequency;
+
+        // Dynamic color change based on frequency
+        material.uniforms.u_red.value = avgFrequency / 256;
+        // material.uniforms.u_green.value = (256 - avgFrequency) / 256;
+        material.uniforms.u_blue.value =
+          0.5 + 0.5 * Math.sin(clock.getElapsedTime());
       }
 
+      // Scale the mesh based on the average frequency
+      const scale = 1 + avgFrequency / 256;
+      meshRef.current.scale.set(scale, scale, scale);
+
       // Rotate the sphere more dynamically
-      meshRef.current.rotation.x += 0.01;
-      meshRef.current.rotation.y += 0.01;
+      meshRef.current.rotation.x += 0.0005;
+      meshRef.current.rotation.y += 0.0005;
     }
   });
 
@@ -62,4 +71,4 @@ const SoundWaveMesh: React.FC<{ analyser: AnalyserNode | null }> = ({
   );
 };
 
-export default SoundWaveMesh;
+export default SoundWaveBall;
