@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import FileUpload from "./components/FileUpload";
-import ReactiveSoundWave from "./components/ReactiveSoundWave";
+import Sceen from "./components/Sceen";
 
 const Home: React.FC = () => {
   const [audioFile, setAudioFile] = useState<File | null>(null);
@@ -14,7 +14,7 @@ const Home: React.FC = () => {
     <div className="h-screen ">
       <FileUpload onFileChange={handleFileChange} />
       {audioFile && <></>}
-      <ReactiveSoundWave audioFile={audioFile} />
+      <Sceen audioFile={audioFile} />
     </div>
   );
 };

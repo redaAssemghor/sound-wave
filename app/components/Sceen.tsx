@@ -1,13 +1,14 @@
 import React, { useRef, useEffect, useState } from "react";
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls } from "@react-three/drei";
+import { OrbitControls, PerspectiveCamera } from "@react-three/drei";
 import SoundWaveBall from "./SoundWaveBall";
+import { Ground } from "./Ground";
 
-interface ReactiveSoundWaveProps {
+interface SceenProps {
   audioFile: File;
 }
 
-const ReactiveSoundWave: React.FC<ReactiveSoundWaveProps> = ({ audioFile }) => {
+const Sceen: React.FC<SceenProps> = ({ audioFile }) => {
   const [analyser, setAnalyser] = useState<AnalyserNode | null>(null);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -52,16 +53,33 @@ const ReactiveSoundWave: React.FC<ReactiveSoundWaveProps> = ({ audioFile }) => {
   }, [audioFile]);
 
   return (
-    <div className="h-full">
-      {audioUrl && <audio controls src={audioUrl} ref={audioRef} />}
-      <Canvas camera={{ position: [0, 0, 10], fov: 45 }}>
-        <ambientLight />
-        <pointLight position={[10, 10, 10]} />
-        <SoundWaveBall analyser={analyser} />
-        <OrbitControls />
-      </Canvas>
-    </div>
+    <Canvas>
+      <PerspectiveCamera makeDefault fov={50} position={[3, 2, 5]} />
+      <color args={[0, 0, 0]} attach="background" />
+      <spotLight
+        color={[1, 0.25, 0.7]}
+        intensity={1.5}
+        angle={0.6}
+        penumbra={0.5}
+        position={[5, 5, 0]}
+        castShadow
+        shadow-bias={-0.0001}
+      />
+      <spotLight
+        color={[0.14, 0.5, 1]}
+        intensity={2}
+        angle={0.6}
+        penumbra={0.5}
+        position={[-5, 5, 0]}
+        castShadow
+        shadow-bias={-0.0001}
+      />
+
+      <OrbitControls target={[0, 0.35, 0]} maxPolarAngle={1.45} />
+      <SoundWaveBall analyser={analyser} />
+      <Ground />
+    </Canvas>
   );
 };
 
-export default ReactiveSoundWave;
+export default Sceen;

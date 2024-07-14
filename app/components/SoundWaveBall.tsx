@@ -64,8 +64,8 @@ const SoundWaveBall: React.FC<{ analyser: AnalyserNode | null }> = ({
   });
 
   return (
-    <mesh ref={meshRef}>
-      <icosahedronGeometry args={[4, 30]} />
+    <mesh ref={meshRef} position={[0, 1, 0]} castShadow>
+      <icosahedronGeometry args={[1, 30]} />
       <waveShaderMaterial wireframe />
     </mesh>
   );
