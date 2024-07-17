@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useFrame, useLoader } from "@react-three/fiber";
 import { MeshReflectorMaterial } from "@react-three/drei";
-import { LinearEncoding, RepeatWrapping, TextureLoader } from "three";
+import { LinearEncoding, RepeatWrapping, TextureLoader, Vector2 } from "three";
 
 export function Ground() {
   const [roughness, normal] = useLoader(TextureLoader, [
@@ -32,7 +32,7 @@ export function Ground() {
       <MeshReflectorMaterial
         envMapIntensity={0}
         normalMap={normal}
-        normalScale={[0.15, 0.15]}
+        normalScale={new Vector2(0.15, 0.15)}
         roughnessMap={roughness}
         dithering={true}
         color={[2, 2, 2]}

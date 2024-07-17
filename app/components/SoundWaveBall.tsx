@@ -9,9 +9,9 @@ const WaveShaderMaterial = shaderMaterial(
   {
     u_time: 0,
     u_frequency: 0,
-    u_red: 238 / 255, // Initial red value for rgb(238,130,238)
-    u_green: 130 / 255, // Initial green value for rgb(238,130,238)
-    u_blue: 238 / 255, // Initial blue value for rgb(238,130,238)
+    u_red: 238 / 255,
+    u_green: 130 / 255,
+    u_blue: 238 / 255,
   },
   vertexShader,
   fragmentShader
@@ -64,7 +64,7 @@ const SoundWaveBall: React.FC<{ analyser: AnalyserNode | null }> = ({
   });
 
   return (
-    <mesh ref={meshRef} position={[0, 1, 0]} castShadow>
+    <mesh ref={meshRef} position={[0, 1, 0]}>
       <icosahedronGeometry args={[1, 30]} />
       <waveShaderMaterial wireframe />
     </mesh>
