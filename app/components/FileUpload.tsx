@@ -35,11 +35,11 @@ const FileUpload: React.FC<FileUploadProps> = ({
   };
 
   return (
-    <div className="p-4 max-w-[400px]">
-      <h1 className="font-bold">
+    <div className="p-4">
+      <h1 className="font-bold text-xl">
         Upload an MP3 file and Pick a shape to start the animation.
       </h1>
-      <div className="flex flex-col gap-4 my-4">
+      <div className="flex flex-col gap-4 my-10">
         <select
           onChange={handelShapePicker}
           className="select select-secondary w-full max-w-xs"

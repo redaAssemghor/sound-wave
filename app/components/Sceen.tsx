@@ -38,17 +38,9 @@ const Sceen: React.FC<SceenProps> = ({ domAudioFile, shape }) => {
               audioElement.src = URL.createObjectURL(domAudioFile);
 
               audioElement.onplay = () => {
-                const newSource = audioCtx.createBufferSource();
-                newSource.buffer = buffer;
-                newSource.connect(analyserNode);
-                analyserNode.connect(audioCtx.destination);
-
                 const track = audioCtx.createMediaElementSource(audioElement);
                 track.connect(analyserNode);
                 analyserNode.connect(audioCtx.destination);
-
-                newSource.start(0, audioElement.currentTime);
-                setSource(newSource);
               };
 
               audioElement.onpause = () => {
