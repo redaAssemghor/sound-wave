@@ -1,5 +1,5 @@
 "use client";
-import { useRef, useState } from "react";
+import React, { useState } from "react";
 import FileUpload from "./components/FileUpload";
 import dynamic from "next/dynamic";
 
@@ -10,7 +10,11 @@ const DynamicSceen = dynamic(() => import("./components/Sceen"), {
 
 const Home: React.FC = () => {
   const [audioFile, setAudioFile] = useState<File | null>(null);
-  const audioRef = useRef<HTMLAudioElement>(null);
+  const [shape, setShape] = useState("");
+
+  const handleShapeChange = (shape: string) => {
+    setShape(shape);
+  };
 
   const handleFileChange = (file: File) => {
     setAudioFile(file);
@@ -18,9 +22,11 @@ const Home: React.FC = () => {
 
   return (
     <div className="h-screen">
-      <FileUpload onFileChange={handleFileChange} />
-
-      <DynamicSceen domAudioFile={audioFile} />
+      <FileUpload
+        onFileChange={handleFileChange}
+        handelShape={handleShapeChange}
+      />
+      {audioFile && <DynamicSceen domAudioFile={audioFile} shape={shape} />}
     </div>
   );
 };

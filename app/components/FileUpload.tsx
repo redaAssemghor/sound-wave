@@ -1,27 +1,64 @@
-import React, { useRef, ChangeEvent } from "react";
+import React, { useRef, ChangeEvent, useState } from "react";
 
 interface FileUploadProps {
   onFileChange: (file: File) => void;
+  handelShape: (shape: string) => void;
 }
 
-const FileUpload: React.FC<FileUploadProps> = ({ onFileChange }) => {
+const FileUpload: React.FC<FileUploadProps> = ({
+  onFileChange,
+  handelShape,
+}) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [pickedShape, setPickedShape] = useState("");
+  const [pickedFile, setPickedFile] = useState<File | null>(null);
+
+  const handelShapePicker = (event: ChangeEvent<HTMLSelectElement>) => {
+    const shape = event.target.value;
+    setPickedShape(shape);
+  };
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      onFileChange(file);
+      setPickedFile(file);
+    }
+  };
+
+  const handelSubmit = () => {
+    if (pickedShape && pickedFile) {
+      handelShape(pickedShape);
+      onFileChange(pickedFile);
+    } else {
+      alert("Please pick a shape and upload an MP3 file.");
     }
   };
 
   return (
     <div>
-      <input
-        type="file"
-        accept="audio/*"
-        ref={fileInputRef}
-        onChange={handleFileChange}
-      />
+      <h1>Upload an MP3 file and Pick a shape to start the animation.</h1>
+      <div>
+        <select
+          onChange={handelShapePicker}
+          className="select select-secondary w-full max-w-xs"
+        >
+          <option disabled selected>
+            Pick a shape ?
+          </option>
+          <option value="sphere">Sphere</option>
+          <option value="torus">Torus</option>
+        </select>
+        <input
+          type="file"
+          className="file-input file-input-bordered file-input-secondary w-full max-w-xs"
+          accept="audio/*"
+          ref={fileInputRef}
+          onChange={handleFileChange}
+        />
+      </div>
+      <button className="btn btn-outline btn-secondary" onClick={handelSubmit}>
+        Start Animation
+      </button>
     </div>
   );
 };
