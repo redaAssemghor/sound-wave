@@ -21,11 +21,12 @@ const Home: React.FC = () => {
   };
 
   return (
-    <div className="h-screen">
+    <div className="h-screen flex flex-col md:flex-row">
       <FileUpload
         onFileChange={handleFileChange}
         handelShape={handleShapeChange}
       />
+      {/* <DynamicSceen domAudioFile={audioFile} shape={shape} /> */}
       {audioFile && <DynamicSceen domAudioFile={audioFile} shape={shape} />}
     </div>
   );

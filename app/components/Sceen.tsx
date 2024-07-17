@@ -67,10 +67,17 @@ const Sceen: React.FC<SceenProps> = ({ domAudioFile, shape }) => {
   }, [domAudioFile]);
 
   return (
-    <div className="h-full">
-      {audioUrl && (
-        <audio id="audio_tag" src={audioUrl} controls ref={audioRef} />
-      )}
+    <div className="h-full w-full">
+      <div className="h-20 p-4 bg-gray-800 rounded-lg">
+        {audioUrl && (
+          <audio
+            className="w-full h-12 bg-transparent shadow-inner"
+            src={audioUrl}
+            controls
+            ref={audioRef}
+          />
+        )}
+      </div>
       <Canvas>
         <PerspectiveCamera makeDefault fov={50} position={[3, 2, 5]} />
         <color args={[0, 0, 0]} attach="background" />
