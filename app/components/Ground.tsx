@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useFrame, useLoader } from "@react-three/fiber";
 import { MeshReflectorMaterial } from "@react-three/drei";
-import { LinearEncoding, RepeatWrapping, TextureLoader, Vector2 } from "three";
+import { RepeatWrapping, TextureLoader, Vector2 } from "three";
 
 export function Ground() {
   const [roughness, normal] = useLoader(TextureLoader, [
@@ -16,8 +16,6 @@ export function Ground() {
       t.repeat.set(5, 5);
       t.offset.set(0, 0);
     });
-
-    normal.encoding = LinearEncoding;
   }, [normal, roughness]);
 
   useFrame((state, delta) => {
@@ -47,7 +45,6 @@ export function Ground() {
         minDepthThreshold={0.9} // Lower edge for the depthTexture interpolation (default = 0)
         maxDepthThreshold={1} // Upper edge for the depthTexture interpolation (default = 0)
         depthToBlurRatioBias={0.25} // Adds a bias factor to the depthTexture before calculating the blur amount [blurFactor = blurTexture * (depthTexture + bias)]. It accepts values between 0 and 1, default is 0.25. An amount > 0 of bias makes sure that the blurTexture is not too sharp because of the multiplication with the depthTexture
-        debug={0}
         reflectorOffset={0.2} // Offsets the virtual camera that projects the reflection. Useful when the reflective surface is some distance from the object's origin (default = 0)
       />
     </mesh>
