@@ -4,6 +4,7 @@ import { OrbitControls, PerspectiveCamera } from "@react-three/drei";
 import SoundWaveBall from "./SoundWaveBall";
 import { Ground } from "./Ground";
 import SoundWaveTorus from "./SoundWaveTorus";
+import { useControls } from "leva";
 
 interface SceenProps {
   domAudioFile: File;
@@ -60,7 +61,7 @@ const Sceen: React.FC<SceenProps> = ({ domAudioFile, shape }) => {
 
   return (
     <div className="h-full w-full">
-      <div className="h-20 p-4 bg-gray-800 rounded-lg">
+      <div className="h-20 p-4  rounded-lg">
         {audioUrl && (
           <audio
             className="w-full h-12 bg-transparent shadow-inner"
@@ -75,7 +76,7 @@ const Sceen: React.FC<SceenProps> = ({ domAudioFile, shape }) => {
         <color args={[0, 0, 0]} attach="background" />
         <spotLight
           color={[1, 0.25, 0.7]}
-          intensity={1.5}
+          intensity={1}
           angle={0.6}
           penumbra={0.5}
           position={[5, 5, 0]}
@@ -84,7 +85,7 @@ const Sceen: React.FC<SceenProps> = ({ domAudioFile, shape }) => {
         />
         <spotLight
           color={[0.14, 0.5, 1]}
-          intensity={2}
+          intensity={1}
           angle={0.6}
           penumbra={0.5}
           position={[-5, 5, 0]}

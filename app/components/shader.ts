@@ -20,23 +20,19 @@ uniform float u_frequency;
 varying vec2 vUv;
 varying float vWave;
 
-vec3 mod289(vec3 x)
-{
+vec3 mod289(vec3 x) {
   return x - floor(x * (1.0 / 289.0)) * 289.0;
 }
 
-vec4 mod289(vec4 x)
-{
+vec4 mod289(vec4 x) {
   return x - floor(x * (1.0 / 289.0)) * 289.0;
 }
 
-vec4 permute(vec4 x)
-{
+vec4 permute(vec4 x) {
   return mod289(((x*34.0)+10.0)*x);
 }
 
-vec4 taylorInvSqrt(vec4 r)
-{
+vec4 taylorInvSqrt(vec4 r) {
   return 1.79284291400159 - 0.85373472095314 * r;
 }
 
@@ -44,9 +40,7 @@ vec3 fade(vec3 t) {
   return t*t*t*(t*(t*6.0-15.0)+10.0);
 }
 
-// Classic Perlin noise, periodic variant
-float pnoise(vec3 P, vec3 rep)
-{
+float pnoise(vec3 P, vec3 rep) {
   vec3 Pi0 = mod(floor(P), rep); // Integer part, modulo period
   vec3 Pi1 = mod(Pi0 + vec3(1.0), rep); // Integer part + 1, mod period
   Pi0 = mod289(Pi0);
@@ -118,8 +112,8 @@ void main() {
   vUv = uv;
 
   // Calculate Perlin noise displacement for initial bumpiness
-  float noise = 3.0 * pnoise(position, vec3(10.0));
-  float displacement = (u_frequency / 30.0) * (noise / 10.0);
+  float noise = pnoise(position + u_time, vec3(10.0));
+  float displacement = noise * 0.2; // Adjust this value for more bumpiness
   vec3 newPosition = position + normal * displacement;
   vWave = displacement;
 

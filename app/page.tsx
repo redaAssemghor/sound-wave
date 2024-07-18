@@ -26,8 +26,9 @@ const Home: React.FC = () => {
         onFileChange={handleFileChange}
         handelShape={handleShapeChange}
       />
-      {/* <DynamicSceen domAudioFile={audioFile} shape={shape} /> */}
-      {audioFile && <DynamicSceen domAudioFile={audioFile} shape={shape} />}
+      <div className="lg:min-w-[1200px] bg-gray-800">
+        {audioFile && <DynamicSceen domAudioFile={audioFile} shape={shape} />}
+      </div>
     </div>
   );
 };
