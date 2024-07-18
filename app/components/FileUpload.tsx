@@ -49,6 +49,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
           </option>
           <option value="sphere">Sphere</option>
           <option value="torus">Torus</option>
+          <option value="cone">Cone</option>
         </select>
         <input
           type="file"

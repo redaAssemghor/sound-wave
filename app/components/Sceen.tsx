@@ -1,10 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, PerspectiveCamera } from "@react-three/drei";
-import SoundWaveBall from "./SoundWaveBall";
+import BallShape from "./BallShape";
 import { Ground } from "./Ground";
-import SoundWaveTorus from "./SoundWaveTorus";
+import TorusShape from "./TorusShape";
 import { useControls } from "leva";
+import ConeShape from "./ConeShape";
 
 interface SceenProps {
   domAudioFile: File;
@@ -94,8 +95,9 @@ const Sceen: React.FC<SceenProps> = ({ domAudioFile, shape }) => {
         />
 
         <OrbitControls target={[0, 0.35, 0]} maxPolarAngle={1.45} />
-        {shape === "sphere" && <SoundWaveBall analyser={analyser} />}
-        {shape === "torus" && <SoundWaveTorus analyser={analyser} />}
+        {shape === "sphere" && <BallShape analyser={analyser} />}
+        {shape === "torus" && <TorusShape analyser={analyser} />}
+        {shape === "cone" && <ConeShape analyser={analyser} />}
         <Ground />
       </Canvas>
     </div>

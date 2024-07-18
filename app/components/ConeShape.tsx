@@ -1,13 +1,15 @@
 import React, { useRef } from "react";
 import * as THREE from "three";
-import { extend, useFrame } from "@react-three/fiber";
-import { shaderMaterial } from "@react-three/drei";
+import { Canvas, extend, useFrame } from "@react-three/fiber";
+import { shaderMaterial, OrbitControls, Effects } from "@react-three/drei";
+import { UnrealBloomPass } from "three-stdlib";
 import { fragmentShader, vertexShader } from "./shader";
 
+// Create the shader material
 const WaveShaderMaterial = shaderMaterial(
   {
     u_time: 0,
-    u_frequency: 10, // Initial value for bumpiness
+    u_frequency: 0,
     u_red: 238 / 255,
     u_green: 130 / 255,
     u_blue: 238 / 255,
@@ -20,13 +22,14 @@ declare global {
   namespace JSX {
     interface IntrinsicElements {
       waveShaderMaterial: any;
+      unrealBloomPass: any;
     }
   }
 }
 
-extend({ WaveShaderMaterial });
+extend({ WaveShaderMaterial, UnrealBloomPass });
 
-const SoundWaveBall: React.FC<{ analyser: AnalyserNode | null }> = ({
+const ConeShape: React.FC<{ analyser: AnalyserNode | null }> = ({
   analyser,
 }) => {
   const meshRef = useRef<THREE.Mesh>(null);
@@ -40,13 +43,15 @@ const SoundWaveBall: React.FC<{ analyser: AnalyserNode | null }> = ({
         dataArray.reduce((sum, value) => sum + value, 0) / dataArray.length;
 
       const material = meshRef.current.material as any;
-      if (material.uniforms) {
+      if (material && material.uniforms) {
         material.uniforms.u_time.value = clock.getElapsedTime();
         material.uniforms.u_frequency.value = avgFrequency;
 
         material.uniforms.u_red.value = avgFrequency / 256;
         material.uniforms.u_blue.value =
           0.5 + 0.5 * Math.sin(clock.getElapsedTime());
+      } else {
+        console.error("Uniforms are not defined on the material.");
       }
 
       const scale = 1 + avgFrequency / 256;
@@ -59,12 +64,12 @@ const SoundWaveBall: React.FC<{ analyser: AnalyserNode | null }> = ({
 
   return (
     <>
-      <mesh ref={meshRef} position={[0, 1, 0]}>
-        <icosahedronGeometry args={[1, 30]} />
-        <waveShaderMaterial wireframe />
+      <mesh ref={meshRef} position={[0, 3, 0]}>
+        <coneGeometry args={[2, 5]} />
+        <waveShaderMaterial />
       </mesh>
     </>
   );
 };
 
-export default SoundWaveBall;
+export default ConeShape;
