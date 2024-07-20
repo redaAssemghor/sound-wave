@@ -2,10 +2,11 @@
 import React, { useState } from "react";
 import FileUpload from "./components/FileUpload";
 import dynamic from "next/dynamic";
+import Loading from "./components/Loading";
 
 const DynamicSceen = dynamic(() => import("./components/Sceen"), {
   ssr: false,
-  loading: () => <p>Loading...</p>,
+  loading: () => <Loading />,
 });
 
 const Home: React.FC = () => {

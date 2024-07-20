@@ -65,8 +65,8 @@ const ConeShape: React.FC<{ analyser: AnalyserNode | null }> = ({
   return (
     <>
       <mesh ref={meshRef} position={[0, 3, 0]}>
-        <coneGeometry args={[2, 5]} />
-        <waveShaderMaterial />
+        <coneGeometry args={[1, 2]} />
+        <waveShaderMaterial wireframe />
       </mesh>
     </>
   );

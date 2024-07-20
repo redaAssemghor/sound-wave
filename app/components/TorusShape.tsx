@@ -65,7 +65,7 @@ const TorusShape: React.FC<{ analyser: AnalyserNode | null }> = ({
 
   return (
     <mesh ref={meshRef} position={[0, 1.4, 0]}>
-      <coneGeometry args={[1, 0.4, 18, 100]} />
+      <torusGeometry args={[1, 0.4, 18, 100]} />
       <waveShaderMaterial wireframe />
     </mesh>
   );
