@@ -27,9 +27,10 @@ declare global {
 
 extend({ WaveShaderMaterial });
 
-const TorusShape: React.FC<{ analyser: AnalyserNode | null }> = ({
-  analyser,
-}) => {
+const TorusShape: React.FC<{
+  analyser: AnalyserNode | null;
+  wireframe: boolean;
+}> = ({ analyser, wireframe }) => {
   const meshRef = useRef<THREE.Mesh>(null);
 
   useFrame(({ clock }) => {
@@ -66,7 +67,7 @@ const TorusShape: React.FC<{ analyser: AnalyserNode | null }> = ({
   return (
     <mesh ref={meshRef} position={[0, 1.4, 0]}>
       <torusGeometry args={[1, 0.4, 18, 100]} />
-      <waveShaderMaterial wireframe />
+      <waveShaderMaterial wireframe={wireframe} />
     </mesh>
   );
 };

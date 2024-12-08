@@ -1,17 +1,29 @@
 import React, { useRef, ChangeEvent, useState } from "react";
+import Checkbox from "./ui/CheckBox";
 
 interface FileUploadProps {
   onFileChange: (file: File) => void;
   handelShape: (shape: string) => void;
+  setWireframe: (wireframe: boolean) => void;
+  audioUrl: string | undefined;
+  audioRef: React.RefObject<HTMLAudioElement>;
 }
 
 const FileUpload: React.FC<FileUploadProps> = ({
   onFileChange,
   handelShape,
+  setWireframe,
+  audioUrl,
+  audioRef,
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [pickedShape, setPickedShape] = useState("");
   const [pickedFile, setPickedFile] = useState<File | null>(null);
+
+  const handleWireframe = (event: ChangeEvent<HTMLInputElement>) => {
+    setWireframe(event.target.checked);
+    console.log(event.target.checked);
+  };
 
   const handelShapePicker = (event: ChangeEvent<HTMLSelectElement>) => {
     const shape = event.target.value;
@@ -35,11 +47,11 @@ const FileUpload: React.FC<FileUploadProps> = ({
   };
 
   return (
-    <div className="max-w-[350px] p-4">
-      <h1 className="font-bold text-xl">
+    <div className="min-w-[400px] h-full p-8">
+      <h1 className="font-bold text-3xl">
         Upload an MP3 file and Pick a shape to start the animation.
       </h1>
-      <div className="flex flex-col gap-4 my-10">
+      <div className="flex flex-col gap-8 my-10">
         <select
           onChange={handelShapePicker}
           className="select select-secondary w-full max-w-xs"
@@ -58,8 +70,20 @@ const FileUpload: React.FC<FileUploadProps> = ({
           ref={fileInputRef}
           onChange={handleFileChange}
         />
+
+        <Checkbox handleWireframe={handleWireframe} />
+
+        <audio
+          className="w-full h-12 bg-transparent shadow-inner"
+          src={audioUrl}
+          controls
+          ref={audioRef}
+        />
       </div>
-      <button className="btn btn-outline btn-secondary" onClick={handelSubmit}>
+      <button
+        className="btn btn-outline btn-secondary mt-auto"
+        onClick={handelSubmit}
+      >
         Start Animation
       </button>
     </div>

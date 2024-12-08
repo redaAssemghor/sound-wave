@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, PerspectiveCamera } from "@react-three/drei";
 import BallShape from "./BallShape";
@@ -6,18 +6,26 @@ import { Ground } from "./Ground";
 import TorusShape from "./TorusShape";
 import { useControls } from "leva";
 import ConeShape from "./ConeShape";
+import Input from "./ui/Audio";
 
 interface SceenProps {
   domAudioFile: File;
   shape: string;
+  wireframe: boolean;
+  setAudioUrl: (url: string) => void;
+  audioRef: React.RefObject<HTMLAudioElement>;
 }
 
-const Sceen: React.FC<SceenProps> = ({ domAudioFile, shape }) => {
+const Sceen: React.FC<SceenProps> = ({
+  domAudioFile,
+  shape,
+  wireframe,
+  setAudioUrl,
+  audioRef,
+}) => {
   const [analyser, setAnalyser] = useState<AnalyserNode | null>(null);
-  const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [audioContext, setAudioContext] = useState<AudioContext | null>(null);
   const [source, setSource] = useState<AudioBufferSourceNode | null>(null);
-  const audioRef = useRef<HTMLAudioElement>(null);
 
   useEffect(() => {
     if (domAudioFile) {
@@ -62,7 +70,7 @@ const Sceen: React.FC<SceenProps> = ({ domAudioFile, shape }) => {
 
   return (
     <div className="h-full w-full">
-      <div className="h-20 p-4  rounded-lg">
+      {/* <div className="h-20 p-4  rounded-lg">
         {audioUrl && (
           <audio
             className="w-full h-12 bg-transparent shadow-inner"
@@ -70,8 +78,9 @@ const Sceen: React.FC<SceenProps> = ({ domAudioFile, shape }) => {
             controls
             ref={audioRef}
           />
+          // <Input audioRef={audioRef} audioUrl={audioUrl} />
         )}
-      </div>
+      </div> */}
       <Canvas>
         <PerspectiveCamera makeDefault fov={50} position={[3, 2, 5]} />
         <color args={[0, 0, 0]} attach="background" />
@@ -94,10 +103,21 @@ const Sceen: React.FC<SceenProps> = ({ domAudioFile, shape }) => {
           shadow-bias={-0.0001}
         />
 
-        <OrbitControls target={[0, 0.35, 0]} maxPolarAngle={1.45} />
-        {shape === "sphere" && <BallShape analyser={analyser} />}
-        {shape === "torus" && <TorusShape analyser={analyser} />}
-        {shape === "cone" && <ConeShape analyser={analyser} />}
+        <OrbitControls
+          target={[0, 0.35, 0]}
+          maxPolarAngle={1.45}
+          maxDistance={10}
+          minDistance={5}
+        />
+        {shape === "sphere" && (
+          <BallShape wireframe={wireframe} analyser={analyser} />
+        )}
+        {shape === "torus" && (
+          <TorusShape wireframe={wireframe} analyser={analyser} />
+        )}
+        {shape === "cone" && (
+          <ConeShape wireframe={wireframe} analyser={analyser} />
+        )}
         <Ground />
       </Canvas>
     </div>

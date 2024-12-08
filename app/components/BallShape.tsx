@@ -25,9 +25,10 @@ declare global {
 
 extend({ WaveShaderMaterial });
 
-const BallShape: React.FC<{ analyser: AnalyserNode | null }> = ({
-  analyser,
-}) => {
+const BallShape: React.FC<{
+  analyser: AnalyserNode | null;
+  wireframe: boolean;
+}> = ({ analyser, wireframe }) => {
   const meshRef = useRef<THREE.Mesh>(null);
 
   useFrame(({ clock }) => {
@@ -60,7 +61,7 @@ const BallShape: React.FC<{ analyser: AnalyserNode | null }> = ({
     <>
       <mesh ref={meshRef} position={[0, 1, 0]}>
         <icosahedronGeometry args={[1, 30]} />
-        <waveShaderMaterial />
+        <waveShaderMaterial wireframe={wireframe} />
       </mesh>
     </>
   );

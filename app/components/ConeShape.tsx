@@ -29,9 +29,10 @@ declare global {
 
 extend({ WaveShaderMaterial, UnrealBloomPass });
 
-const ConeShape: React.FC<{ analyser: AnalyserNode | null }> = ({
-  analyser,
-}) => {
+const ConeShape: React.FC<{
+  analyser: AnalyserNode | null;
+  wireframe: boolean;
+}> = ({ analyser, wireframe }) => {
   const meshRef = useRef<THREE.Mesh>(null);
 
   useFrame(({ clock }) => {
@@ -66,7 +67,7 @@ const ConeShape: React.FC<{ analyser: AnalyserNode | null }> = ({
     <>
       <mesh ref={meshRef} position={[0, 3, 0]}>
         <coneGeometry args={[1, 2]} />
-        <waveShaderMaterial wireframe />
+        <waveShaderMaterial wireframe={wireframe} />
       </mesh>
     </>
   );
