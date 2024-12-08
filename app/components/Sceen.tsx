@@ -6,7 +6,6 @@ import { Ground } from "./Ground";
 import TorusShape from "./TorusShape";
 import { useControls } from "leva";
 import ConeShape from "./ConeShape";
-import Input from "./ui/Audio";
 
 interface SceenProps {
   domAudioFile: File;
@@ -70,17 +69,6 @@ const Sceen: React.FC<SceenProps> = ({
 
   return (
     <div className="h-full w-full">
-      {/* <div className="h-20 p-4  rounded-lg">
-        {audioUrl && (
-          <audio
-            className="w-full h-12 bg-transparent shadow-inner"
-            src={audioUrl}
-            controls
-            ref={audioRef}
-          />
-          // <Input audioRef={audioRef} audioUrl={audioUrl} />
-        )}
-      </div> */}
       <Canvas>
         <PerspectiveCamera makeDefault fov={50} position={[3, 2, 5]} />
         <color args={[0, 0, 0]} attach="background" />

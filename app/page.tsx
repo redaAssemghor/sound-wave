@@ -26,7 +26,7 @@ const Home: React.FC = () => {
   };
 
   return (
-    <div className="h-screen w-screen overflow-hidden flex flex-col md:flex-row">
+    <div className="h-screen w-full overflow-hidden flex flex-col md:flex-row">
       <FileUpload
         setWireframe={setWireframe}
         onFileChange={handleFileChange}
